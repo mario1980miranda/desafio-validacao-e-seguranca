@@ -4,12 +4,17 @@ import java.time.LocalDate;
 
 import com.devsuperior.demo.entities.Event;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class EventDTO {
 	
 	private Long id;
+	@NotBlank(message = "Campo requerido")
 	private String name;
 	private LocalDate date;
 	private String url;
+	@NotNull(message = "Campo requerido")
 	private Long cityId;
 	
 	public EventDTO() {
