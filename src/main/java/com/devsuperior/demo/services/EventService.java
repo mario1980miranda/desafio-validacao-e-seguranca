@@ -1,6 +1,8 @@
 package com.devsuperior.demo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +22,13 @@ public class EventService {
 	@Autowired private CityRepository cityRepository;
 	
 	@Transactional
-	public EventDTO update(Long id, EventDTO dto) {
+	public EventDTO insert(EventDTO dto) {
 		
 		try {
 			
-			Event entity = repository.getReferenceById(id);
-			City cityEntity = cityRepository.getReferenceById(dto.getCityId());			
+			City cityEntity = cityRepository.getReferenceById(dto.getCityId());
+			
+			Event entity = new Event();
 			
 			entity.setCity(cityEntity);
 			entity.setDate(dto.getDate());
@@ -39,6 +42,14 @@ public class EventService {
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Recurso não encontrado");
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public Page<EventDTO> findAll(Pageable pageable) {
+		
+		final Page<Event> result = repository.findAll(pageable);
+		
+		return result.map(x -> new EventDTO(x));
 	}
 	
 }
